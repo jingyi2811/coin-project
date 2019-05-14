@@ -1,0 +1,4 @@
+cd /Library/PostgreSQL/9.4/bin
+./pg_ctl -D /usr/local/var/postgres start
+
+/Library/PostgreSQL/9.4/bin/pg_ctl
