@@ -33,20 +33,6 @@ sub selectCount{
     return $count;
 }
 
-sub selectAll{
-
-    my $self = shift;
-
-    my $sql = "select id, coin_id, address, private_key, created_date, updated_date FROM address_pool";
-    my $stmt = $conn -> select($sql);
-
-    while ( my @row = $stmt->fetchrow_array ) {
-        print "@row\n";
-    }
-
-    return $stmt;
-}
-
 sub insert{
 
     my $self = shift;
@@ -56,6 +42,22 @@ sub insert{
     my $stmt = $conn -> execute($sql);
 
     return $stmt
+}
+
+# Customize subroutine
+
+sub selectOne{
+
+    my $self = shift;
+
+    my $sql = "select id, coin_id, address, private_key, created_date, updated_date FROM address_pool limit 1";
+    my $stmt = $conn -> select($sql);
+
+    while ( my @row = $stmt->fetchrow_array ) {
+        print "@row\n";
+    }
+
+    return $stmt;
 }
 
 sub disconnect(){

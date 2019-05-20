@@ -1,1 +1,1 @@
-docker run --name litecoin-deposit -d --rm -p 127.0.0.1:8332:8332 -v /private/storage/litecoin/litecoin-deposit:/root/.litecoin skywills87/litecoind
+docker run --rm --name ltc     -d  -p 9001:8332      -v /private/storage:/root/.litecoin      skywills87/litecoind

@@ -5,6 +5,7 @@ use DBI;
 use Config::Properties;
 use JSON::RPC::Client;
 use Data::Dumper;
+use feature qw(say);
 
 use util::prop;
 
@@ -29,7 +30,8 @@ sub init {
 sub connect(){
 
     my $self = shift;
-    my ($methodName) = @_;
+    my ($methodName, $param) = @_;
+    my @array = $param;
 
     my $client = new JSON::RPC::Client;
 
@@ -41,7 +43,7 @@ sub connect(){
 
     my $obj = {
         method  => $methodName,
-        params  => [],
+        params  => [@array],
     };
 
     my $res = $client->call( $uri, $obj );
