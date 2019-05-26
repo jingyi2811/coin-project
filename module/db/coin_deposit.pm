@@ -7,6 +7,8 @@ use Moose;
 use util::prop;
 use db_conn;
 
+use feature qw(say);
+
 my $conn;
 
 sub init {
@@ -23,15 +25,16 @@ sub selectCountAddress{
     my ($to_address) = @_;
 
     my $sql = "select count(*) from coin_deposit where to_address = '".$to_address."'";
+
     my $stmt = $conn -> select($sql);
 
     my $count;
 
     while (my @row = $stmt->fetchrow_array) {
-        $count = "@row\n";
+        $count = "@row";
     }
 
-    return $stmt
+    return $count
 }
 
 sub insert{

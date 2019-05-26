@@ -1,1 +1,0 @@
-docker run --rm --name ltc     -d  -p 9001:8332      -v /private/storage:/root/.litecoin      skywills87/litecoind

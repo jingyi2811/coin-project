@@ -1,0 +1,21 @@
+[How to link Perl file with Perl module folder?]
+
+    export PERL5LIB=/Users/jimmylee/Desktop/coin-project/module
+
+[How to start a postgresql service?]
+
+    cd /Library/PostgreSQL/9.4/bin
+    ./pg_ctl -D /usr/local/var/postgres start
+    /Library/PostgreSQL/9.4/bin/pg_ctl
+
+[How to run a Litecoin testnet docker image?]
+
+    docker run --rm --name ltc     -d  -p 9001:8332      -v /private/storage:/root/.litecoin      skywills87/litecoind
+
+[How to verify if the Litecoin docker testnet containeris working or not?]
+
+    curl --user foo:password  --data-binary '{"jsonrpc":"1.0","id":"curltext","method":"getblockchaininfo","params":[]}' http://127.0.0.1:9001
+
+[How to start this Perl project?]
+
+    Plackup main.pl

@@ -48,11 +48,14 @@ sub connect(){
 
     my $res = $client->call( $uri, $obj );
 
+    say $res->result;
+
     if ($res){
-        if ($res->is_error) { print "Error : ", $res->error_message; }
+        if ($res->is_error) { say "Error : ", $res->error_message; return 0;}
         else { return $res->result; }
     } else {
-        print $client->status_line;
+        say $client->status_line;
+        return 0;
     }
 }
 

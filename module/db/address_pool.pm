@@ -50,14 +50,27 @@ sub selectOne{
 
     my $self = shift;
 
-    my $sql = "select id, coin_id, address, private_key, created_date, updated_date FROM address_pool limit 1";
+    my $sql = "select address FROM address_pool limit 1";
     my $stmt = $conn -> select($sql);
 
+    my $address;
+
     while ( my @row = $stmt->fetchrow_array ) {
-        print "@row\n";
+        $address = "@row";
     }
 
-    return $stmt;
+    return $address;
+}
+
+sub deleteOne{
+
+    my $self = shift;
+    my ($address) = @_;
+
+    my $sql = "delete FROM address_pool where address = '".$address."'";
+    my $stmt = $conn -> execute($sql);
+
+    return $stmt
 }
 
 sub disconnect(){
