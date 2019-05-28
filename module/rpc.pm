@@ -30,8 +30,7 @@ sub init {
 sub connect(){
 
     my $self = shift;
-    my ($methodName, $param) = @_;
-    my @array = $param;
+    my ($methodName, @arr) = @_;
 
     my $client = new JSON::RPC::Client;
 
@@ -43,7 +42,7 @@ sub connect(){
 
     my $obj = {
         method  => $methodName,
-        params  => [@array],
+        params  => [@arr],
     };
 
     my $res = $client->call( $uri, $obj );

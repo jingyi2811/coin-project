@@ -14,7 +14,6 @@ use db::coin_withdraw;
 
 use rpc;
 
-
 my %ROUTING = (
     '/generate_address'  => \&generate_address,
     '/get_an_address'    => \&get_an_address,
@@ -116,7 +115,6 @@ sub coin_deposit {
         my $count = db::coin_deposit->insert(1, 1, $to_address, $balance);
     }
 
-
     return [
         '200',
         [ 'Content-Type' => 'application/json' ],
@@ -130,38 +128,21 @@ sub coin_withdraw {
 
     my $request = Plack::Request->new($env);
 
-    my $coin_id = $request->param('coin_id');
-    my $user_id = $request->param('user_id');
-    my $from_address = $request->param('from_address');
     my $to_address = $request->param('to_address');
     my $amount = $request->param('amount');
 
-    if (not defined $coin_id) {
-        return [
-            '404',
-            [ 'Content-Type' => 'application/json' ],
-            [ '404 Not Found' ],
-        ];
-    }
-
-    #my $user_id = 1;
-    #my $from_address = 1;
-    #my $to_address = '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd';
-    #my $amount = '0.1';
+    my @arr = ($to_address,$amount);
 
     rpc->init();
 
-    my @param = { $to_address, $amount };
-    my $txid = rpc->connect('sendtoaddress', @param);
-
-    say 'Withdrawal succesfully. The transaction id = ' . $txid;
+    my $txid = rpc->connect('sendtoaddress', @arr);
 
     db::coin_withdraw->init();
-    my $count = db::coin_withdraw->insert($coin_id, $user_id, $txid, $from_address, $to_address, $amount);
+    my $count = db::coin_withdraw->insert(1, 1, $txid, 'system', $to_address, $amount);
 
     return [
         '200',
         [ 'Content-Type' => 'application/json' ],
-        [ to_json '' ],
+        [ $txid ],
     ];
 }
