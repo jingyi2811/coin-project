@@ -2,19 +2,17 @@
 
 package db::address_pool;
 
-use Moose;
+use strict;
+use warnings;
 
 use util::prop;
 use db_conn;
-
-my $conn;
 
 sub init {
 
     my $self = shift;
 
-    $conn = db_conn -> new();
-    $conn -> init();
+    db_conn -> init();
 }
 
 sub selectCount{
@@ -22,9 +20,9 @@ sub selectCount{
     my $self = shift;
 
     my $sql = "select count(*) from address_pool";
-    my $stmt = $conn -> select($sql);
+    my $stmt = db_conn -> execute($sql, ());
 
-    my $count;
+    my $count = 0;
 
     if ( my @row = $stmt->fetchrow_array ) {
         $count = "@row\n";
@@ -38,22 +36,20 @@ sub insert{
     my $self = shift;
     my ($coin_id, $address) = @_;
 
-    my $sql = "insert into address_pool(coin_id, address, private_key, created_date, updated_date) values ('${coin_id}', '${address}', null, current_timestamp, current_timestamp)";
-    my $stmt = $conn -> execute($sql);
+    my $sql = "insert into address_pool(coin_id, address, private_key, created_date, updated_date) values (?, ?, null, current_timestamp, current_timestamp)";
+    my $result = db_conn -> execute($sql, @_);
 
-    return $stmt
+    return $result;
 }
-
-# Customize subroutine
 
 sub selectOne{
 
     my $self = shift;
 
     my $sql = "select address FROM address_pool limit 1";
-    my $stmt = $conn -> select($sql);
+    my $stmt = db_conn -> execute($sql, ());
 
-    my $address;
+    my $address = "";
 
     while ( my @row = $stmt->fetchrow_array ) {
         $address = "@row";
@@ -67,19 +63,17 @@ sub deleteOne{
     my $self = shift;
     my ($address) = @_;
 
-    my $sql = "delete FROM address_pool where address = '".$address."'";
-    my $stmt = $conn -> execute($sql);
+    my $sql = "delete FROM address_pool where address = ?";
+    my $result = db_conn -> execute($sql, @_);
 
-    return $stmt
+    return $result;
 }
 
 sub disconnect(){
 
     my $self = shift;
 
-    $conn -> disconnect();
+    db_conn -> disconnect();
 }
-
-no Moose;
 
 1;

@@ -1,15 +1,16 @@
+#!/usr/bin/perl
+
 package rpc;
 
-use Moose;
+use strict;
+use warnings;
+
 use DBI;
 use Config::Properties;
 use JSON::RPC::Client;
-use Data::Dumper;
-use feature qw(say);
 
 use util::prop;
 
-# properties
 my $nodeUrl;
 my $nodeUser;
 my $nodePassword;
@@ -18,8 +19,8 @@ sub init {
 
     my $self = shift;
 
-    my $obj1 = util::prop->new(category => 0, name => "env");
-    my $properties = $obj1->load();
+    my $obj = util::prop->new(name => "env");
+    my $properties = $obj->load();
 
     $nodeUrl = $properties->getProperty('node.url');
     $nodeUser = $properties->getProperty('node.user');
@@ -35,7 +36,7 @@ sub connect(){
     my $client = new JSON::RPC::Client;
 
     $client->ua->credentials(
-        $nodeUrl, 'jsonrpc', $nodeUser => $nodePassword  # REPLACE WITH YOUR bitcoin.conf rpcuser/rpcpassword
+        $nodeUrl, 'jsonrpc', $nodeUser => $nodePassword
     );
 
     my $uri = 'http://'.$nodeUrl;
@@ -47,17 +48,19 @@ sub connect(){
 
     my $res = $client->call( $uri, $obj );
 
-    say $res->result;
-
     if ($res){
-        if ($res->is_error) { say "Error : ", $res->error_message; return 0;}
-        else { return $res->result; }
+
+        if ($res->is_error) {
+            return $res->error_message;
+        }
+        else {
+            return $res->result;
+        }
+
     } else {
-        say $client->status_line;
+        print $client->status_line;
         return 0;
     }
 }
-
-no Moose;
 
 1;

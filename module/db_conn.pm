@@ -1,6 +1,10 @@
+#!/usr/bin/perl
+
 package db_conn;
 
-use Moose;
+use strict;
+use warnings;
+
 use DBI;
 use Config::Properties;
 
@@ -12,11 +16,9 @@ sub init {
 
     my $self = shift;
 
-    my $obj1 = util::prop->new(category => 0, name => "env");
-    my $properties = $obj1->load();
+    my $obj = util::prop->new(name => "env");
+    my $properties = $obj->load();
 
-    my $dbDriver = $properties->getProperty('db.driver');
-    my $dbName = $properties->getProperty('db.name');
     my $dbUrl =  $properties->getProperty('db.url');
     my $dbUser = $properties->getProperty('db.user');
     my $dbPassword = $properties->getProperty('db.password');
@@ -26,25 +28,24 @@ sub init {
     return $conn;
 }
 
-sub select{
+sub execute{
 
     my $self = shift;
-    my ($sql) = @_;
+    my ($sql, @param) = @_;
+
+    my $array_length = scalar @param;
 
     my $stmt = $conn->prepare( $sql );
+
+    my $count;
+
+    for ($count = 0 ; $count < $array_length; $count++) {
+        $stmt->bind_param( $count + 1, $param[$count]);
+    }
 
     $stmt->execute() or die $DBI::errstr;
 
     return $stmt;
-}
-
-# This method is used by either insert, update or delete.
-sub execute{
-
-    my $self = shift;
-    my ($sql) = @_;
-
-    my $rv = $conn->do($sql) or die $DBI::errstr;
 }
 
 sub disconnect(){
@@ -53,7 +54,5 @@ sub disconnect(){
 
     $conn->disconnect();
 }
-
-no Moose;
 
 1;
